@@ -9,9 +9,18 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.healthapp.ios",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "191236326014-i0m2gccrgc9gohgst2f9701i9ou6ec6c.apps.googleusercontent.com"
+        }
+      }
     },
     "android": {
+      "package": "com.healthapp.andriod",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -21,10 +30,21 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "config": {
+        "firebase": {
+          "projectId": "healthapp-36186"
+        }
+      }
     },
     "plugins": [
       "expo-router",
+       [
+        "react-native-maps",
+        {
+          "apiKey": "AIzaSyAc9aZ_ADqy-nF4nodBlYJ3R1lgN-ycGSY"
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -32,6 +52,17 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
+        }
+      ],
+
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
       ]
     ],

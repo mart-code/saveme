@@ -1,15 +1,10 @@
-import SignInScreen from "@/app/signIn";
-// import ConfirmEmail from '@/app/confirmEmail';
-// import ForgotPassword from '@/app/forgotPassword';
-// import NewPassword from "@/app/newPassword";
-import { View } from "react-native";
+import React from "react";
+import { Text, View } from "react-native";
 
-const App = () => {
+export default function index() {
   return (
     <View>
-      <SignInScreen />
+      <Text>index</Text>
     </View>
   );
-};
-
-export default App;
+}

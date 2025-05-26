@@ -1,104 +1,110 @@
-import CustomButton from "@/components/CustomButton/CustomButton";
-import CustomInput from "@/components/CustomInput/CustomInput";
-import SocialSignInButtons from "@/components/SocialSignInButtons/SocialSignInButtons";
+// import auth from "@react-native-firebase/auth";
 import { router } from "expo-router";
-import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import {
+  Button,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { ActivityIndicator, TextInput } from "react-native-web";
+import { auth } from "../../firebase/config";
 
-const SignUpScreen = () => {
-  const [username, setUsername] = useState("");
+export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const onPrivacyPolicyPressed = () => {
-    console.warn("onPrivacyPolicyPressed");
-  };
-  const onTermsOfUsePressed = () => {
-    console.warn("onTermsOfUsePressed");
-  };
-  const onSignInPressed = () => {
-    console.warn("onSignInPressed");
-    router.push('/signIn')  };
-  const onRegisterPressed = () => {
-    console.warn("Register");
-    router.push('/confirmEmail')
-  };
-  const onForgotPasswordPressed = () => {
-    console.warn("Forgot Password");
-    router.push('/forgotPassword')
+  const goToSignIn = () => {
+    router.push("/signIn");
   };
 
+  const signUp = async () => {
+    setLoading(true);
+    try {
+      if (password === confirmPassword) {
+        await createUserWithEmailAndPassword(auth, email, password);
+        router.push("/");
+      } else {
+        alert("passords don't match");
+      }
+    } catch (error) {
+      alert("Registration failed: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View>
-        <Text style={styles.title}>Create an account</Text>
-        <CustomInput
-          placeholder="Username"
-          value={username}
-          setValue={setUsername}
+    <View style={styles.container}>
+      <KeyboardAvoidingView behavior="padding">
+        <TextInput
+          style={styles.input}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          placeholder="Email"
         />
-        <CustomInput placeholder="Email" value={email} setValue={setEmail} />
-        <CustomInput
-          placeholder="Password"
+
+        <TextInput
+          style={styles.input}
           value={password}
-          setValue={setPassword}
-          secureTextEntry={true}
+          onChangeText={setPassword}
+          placeholder="Password"
+          secureTextEntry
         />
-        <CustomInput
-          placeholder="Repeat Password"
-          value={passwordRepeat}
-          setValue={setPasswordRepeat}
-          secureTextEntry={true}
+        <TextInput
+          style={styles.input}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          placeholder="Confirm Password"
+          secureTextEntry
         />
-        <CustomButton text="Register" action={onRegisterPressed} />
-        <Text>
-          By registering, you confirm that you accept our{" "}
-          <Text style={styles.link} onPress={onTermsOfUsePressed}>
-            Terms of Use
-          </Text>{" "}
-          and
-          <Text style={styles.link} onPress={onPrivacyPolicyPressed}>
-            {" "}
-            Privacy Policy
+        {loading ? (
+          <ActivityIndicator size={"small"} style={{ margin: 28 }} />
+        ) : (
+          <Button onPress={signUp} title="Sign Up" />
+        )}
+
+        {/* Redirect to Sign In */}
+        <TouchableOpacity onPress={goToSignIn} style={styles.signInLink}>
+          <Text style={styles.signInText}>
+            Have an account? <Text style={styles.signInButton}>Sign In</Text>
           </Text>
-        </Text>
-        <CustomButton
-          text="Forgot Password"
-          action={onForgotPasswordPressed}
-          type="TERTIARY"
-        />
-        <SocialSignInButtons />
-        <CustomButton
-          text="Have an account? Sign in"
-          action={onSignInPressed}
-          type="TERTIARY"
-        />
-      </View>
-    </ScrollView>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  root: {
+  container: {
+    marginHorizontal: 20,
+    flex: 1,
+    justifyContent: "center",
+  },
+  input: {
+    marginVertical: 4,
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    backgroundColor: "#ffffff",
+  },
+  signInLink: {
+    marginTop: 16,
     alignItems: "center",
-    padding: 20,
   },
-  title: {
-    fontSize: 24,
+  signInText: {
+    fontSize: 14,
+    color: "#555",
+  },
+  signInButton: {
+    color: "#007BFF",
     fontWeight: "bold",
-    color: "#1a1a1a",
-    margin: 10,
-    textAlign: "center",
-  },
-  text: {
-    textAlign: "center",
-    color: "gray",
-    marginVertical: 10,
-  },
-  link: {
-    color: "#FDB875",
   },
 });
-
-export default SignUpScreen;

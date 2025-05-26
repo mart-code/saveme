@@ -1,89 +1,101 @@
-import CustomButton from "@/components/CustomButton/CustomButton";
-import CustomInput from "@/components/CustomInput/CustomInput";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
 import {
-  Image,
-  ScrollView,
+  Button,
+  KeyboardAvoidingView,
   StyleSheet,
+  Text,
+  TextInput,
   View,
-  useWindowDimensions,
-} from "react-native";
-import Logo from "../../assets/images/favicon.png";
-import SocialSignInButtons from "../../components/SocialSignInButtons/SocialSignInButtons";
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native"; // NOTE: All from react-native
 
-const SignInScreen = () => {
-  const [username, setUsername] = useState("");
+import { auth } from "../../firebase/config";
+
+export default function SignIn() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { height } = useWindowDimensions();
-  const onSignInPressed = () => {
-    console.warn("Sign in");
-    //validate user
-    router.push("/home");
-  };
-  const onForgotPasswordPressed = () => {
-    console.warn("Forgot Password");
-    router.push('/forgotPassword')
+  const [loading, setLoading] = useState(false);
+
+  const signIn = async () => {
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/"); // Redirect to home or dashboard
+    } catch (error) {
+      alert("Sign in failed: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const onSignUpPress = () => {
-    console.warn("Sign up");
-    router.push('/signUp')
+  const goToSignUp = () => {
+    router.push("/signUp"); // Update this to match your actual sign-up route
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.root}>
-        <Image
-          source={Logo}
-          style={[styles.logo, { height: height * 0.3 }]}
-          resizeMode="contain"
+    <View style={styles.container}>
+      <KeyboardAvoidingView behavior="padding">
+        <TextInput
+          style={styles.input}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
+          placeholder="Email"
         />
-        <CustomInput
-          placeholder="Username"
-          value={username}
-          setValue={setUsername}
-        />
-        <CustomInput
-          placeholder="Password"
+
+        <TextInput
+          style={styles.input}
           value={password}
-          setValue={setPassword}
-          secureTextEntry={true}
+          onChangeText={setPassword}
+          placeholder="Password"
+          secureTextEntry
         />
-        <CustomButton text="Sign In" action={onSignInPressed} />
-        <CustomButton
-          text="Forgot Password"
-          action={onForgotPasswordPressed}
-          type="TERTIARY"
-        />
-        <SocialSignInButtons />
-        {/* <CustomButton
-        text="Sign In with Apple"
-        action={onSignInApple}
-        bgColor="#e3e3e3"
-        fgColor="#363636"
-      /> */}
-        <CustomButton
-          text="Don't have an account? Create one"
-          action={onSignUpPress}
-          type="TERTIARY"
-        />
-      </View>
-    </ScrollView>
+
+        {loading ? (
+          <ActivityIndicator size="small" style={{ margin: 28 }} />
+        ) : (
+          <Button onPress={signIn} title="Sign In" />
+        )}
+
+        {/* Redirect to Sign Up */}
+        <TouchableOpacity onPress={goToSignUp} style={styles.signUpLink}>
+          <Text style={styles.signUpText}>
+            Don&apos;t have an account? <Text style={styles.signUpButton}>Sign Up</Text>
+          </Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  root: {
-    alignItems: "center",
-    padding: 20,
+  container: {
+    marginHorizontal: 20,
+    flex: 1,
+    justifyContent: "center",
   },
-  logo: {
-    width: "70%",
-    maxWidth: 300,
-    maxHeight: 100,
-    marginBottom: 100,
+  input: {
+    marginVertical: 4,
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    backgroundColor: "#ffffff",
+  },
+  signUpLink: {
+    marginTop: 16,
+    alignItems: "center",
+  },
+  signUpText: {
+    fontSize: 14,
+    color: "#555",
+  },
+  signUpButton: {
+    color: "#007BFF",
+    fontWeight: "bold",
   },
 });
-
-export default SignInScreen;

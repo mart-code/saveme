@@ -1,8 +1,11 @@
+import {AuthProvider} from "../context/AuthContext";
 import { Stack } from "expo-router";
 import "react-native-reanimated";
 
 export default function RootLayout() {
+ 
   return (
+    <AuthProvider>
     <Stack
       screenOptions={{
         headerShown: false,
@@ -12,22 +15,11 @@ export default function RootLayout() {
         },
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Sign In" }} />
-      <Stack.Screen name="homeScreen" options={{ title: "Home" }} />
-      <Stack.Screen name="signUp" options={{ headerTitle: "Sign Up" }} />
-      <Stack.Screen name="signIn" options={{ headerTitle: "Sign In" }} />
-      <Stack.Screen
-        name="forgotPassword"
-        options={{ headerTitle: "Forgot Password" }}
-      />
-      <Stack.Screen
-        name="newPassword"
-        options={{ headerTitle: "Set New Password" }}
-      />
-      <Stack.Screen
-        name="confirmEmail"
-        options={{ headerTitle: "Confirm Email" }}
-      />
+      <Stack.Screen name="index" />
+      <Stack.Screen name="signIn" options={{ title: "Sign In" }} />
+      <Stack.Screen name="signUp" options={{ title: "Sign Up" }} />
     </Stack>
+    </AuthProvider>
+
   );
 }
