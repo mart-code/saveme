@@ -20,6 +20,11 @@
     },
     "android": {
       "package": "com.healthapp.andriod",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAc9aZ_ADqy-nF4nodBlYJ3R1lgN-ycGSY"
+        }
+      },
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -39,12 +44,7 @@
     },
     "plugins": [
       "expo-router",
-       [
-        "react-native-maps",
-        {
-          "apiKey": "AIzaSyAc9aZ_ADqy-nF4nodBlYJ3R1lgN-ycGSY"
-        }
-      ],
+
       [
         "expo-splash-screen",
         {
@@ -54,7 +54,6 @@
           "backgroundColor": "#ffffff"
         }
       ],
-
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
       [
